@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fh.shop.admin.mapper.resource.IResourceMapper">
+
+	<!--查询资源表集合-->
+	<select id="findResourceList" resultType="com.fh.shop.admin.po.resource.Resource">
+		select id,menuName,fatherId,menuType,url from t_resource;
+	</select>
+
+	<!--新增节点-->
+	<insert id="addResource" parameterType="com.fh.shop.admin.po.resource.Resource">
+		<selectKey resultType="long"  order="AFTER" keyProperty="id">
+			select last_insert_id();
+		</selectKey>
+		insert into t_resource (menuName,fatherId,menuType,url) values(#{menuName},#{fatherId},#{menuType},#{url});
+	</insert>
+
+	<!--回显-->
+	<select id="findResource" parameterType="Long" resultType="com.fh.shop.admin.po.resource.Resource">
+		select id,menuName,fatherId,menuType,url from t_resource where id=#{value};
+	</select>
+
+	<!--修改-->
+	<update id="updateResource" parameterType="com.fh.shop.admin.po.resource.Resource">
+		update t_resource set menuName=#{menuName},menuType=#{menuType},url=#{url} where id=#{id};
+	</update>
+
+	<!--删除节点数组-->
+	<delete id="deleteResource" >
+		delete from t_resource where 1>2 or id in
+		<foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!--删除中间表数据-->
+	<delete id="deleteRoleResource">
+		delete from t_role_resource where resourceId in
+		<foreach collection="list" separator="," item="ids" open="(" close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!--根据登陆用户查询菜单树-->
+	<select id="findResourceByUserId" parameterType="long" resultType="com.fh.shop.admin.po.resource.Resource">
+		select tr.* from t_resource tr
+			  left join t_role_resource trr on tr.id=trr.resourceId
+   			  left join t_user_role tur on tur.roleId=trr.roleId
+   		   where tur.userId=#{id} and tr.menuType=1 group by tr.id;
+	</select>
+
+	<!--查询当前登录的用户的所有资源-->
+	<select id="findUserAllResource" parameterType="long" resultType="com.fh.shop.admin.po.resource.Resource">
+		select tr.* from t_resource tr
+			  left join t_role_resource trr on tr.id=trr.resourceId
+   			  left join t_user_role tur on tur.roleId=trr.roleId
+   		   where tur.userId=#{id} group by tr.id;
+	</select>
+
+</mapper>

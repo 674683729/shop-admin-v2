@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="EntryPointsManager">
+    <list size="4">
+      <item index="0" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ControllerAdvice" />
+      <item index="1" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ExceptionHandler" />
+      <item index="2" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.GetMapping" />
+      <item index="3" class="java.lang.String" itemvalue="org.springframework.web.bind.annotation.ResponseBody" />
+    </list>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="FUSUsageTrigger">
+    <session id="929741004">
+      <usages-collector id="statistics.spring.core.usages.trigger">
+        <counts>
+          <entry key="fixes.SpringFacetInspection.AddFacetFix" value="1" />
+        </counts>
+      </usages-collector>
+    </session>
+  </component>
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/../com-fh-car" />
+    <file type="web" url="file://$PROJECT_DIR$/../mybatis-plus" />
+    <file type="web" url="file://$PROJECT_DIR$" />
+    <file type="web" url="file://$PROJECT_DIR$/../shop-admin-v2" />
+    <file type="web" url="file://$PROJECT_DIR$/../shop-admin-v3" />
+    <file type="web" url="file://$PROJECT_DIR$/../shop-admin-v4" />
+    <file type="web" url="file://$PROJECT_DIR$/../shop-api" />
+    <file type="web" url="file://$PROJECT_DIR$/../shop-api-v2" />
+    <file type="web" url="file://$PROJECT_DIR$/../springmvc-spring-jpa" />
+    <file type="web" url="file://$PROJECT_DIR$/../vue-axios-ssmp" />
+    <type id="Spring" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/../shop-admin-v3/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../mybatis-plus/pom.xml" />
+        <option value="$PROJECT_DIR$/../vue-axios-ssmp/pom.xml" />
+        <option value="$PROJECT_DIR$/../com-fh-car/pom.xml" />
+        <option value="$PROJECT_DIR$/../shop-admin-v4/pom.xml" />
+        <option value="$PROJECT_DIR$/../springmvc-spring-jpa/pom.xml" />
+        <option value="$PROJECT_DIR$/../shop-api/pom.xml" />
+        <option value="$PROJECT_DIR$/../shop-api-v2/pom.xml" />
+        <option value="$PROJECT_DIR$/../shop-admin-v2/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/../fh1902-demo/js/vue.js" />
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

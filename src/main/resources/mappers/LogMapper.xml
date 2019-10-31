@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fh.shop.admin.mapper.log.ILogMapper">
+	<sql id="logWhere">
+		<where>
+			<if test="userName!=null and userName!=''">
+				userName like concat('%',#{userName},'%')
+			</if>
+			<if test="realName!=null and realName!=''">
+				and realName like concat('%',#{realName},'%')
+			</if>
+			<if test="status != null and status > -1">
+				and status=#{status}
+			</if>
+			<if test="context!=null and context!=''">
+                and context like concat('%',#{context},'%')
+			</if>
+			<if test="minCurrTime != null">
+				and currTime >=#{minCurrTime}
+			</if>
+			<if test="maxCurrTime != null and maxCurrTime >=minCurrTime">
+				and currTime &lt;=#{maxCurrTime}
+			</if>
+		</where>
+	</sql>
+
+	<!--查询日志总条数-->
+	<select id="findLogCount" parameterType="com.fh.shop.admin.param.log.LogSearchParam" resultType="Long">
+		select count(*) from t_log
+		<include refid="logWhere"></include>
+	</select>
+
+	<!--日志分页数据-->
+	<select id="findLogPageList" parameterType="com.fh.shop.admin.param.log.LogSearchParam" resultType="com.fh.shop.admin.po.log.Log">
+		select t.* from
+		(select id,userName,realName,currTime,info,status,errorMsg,detail,context from t_log
+		<include refid="logWhere"></include>
+		order by id desc) t
+		limit #{start},#{length};
+	</select>
+
+	<!--新增日志-->
+	<insert id="addLog" parameterType="com.fh.shop.admin.po.log.Log">
+		insert into t_log (userName,realName,currTime,info,status,errorMsg,detail,context)
+		  values(#{userName},#{realName},#{currTime},#{info},#{status},#{errorMsg},#{detail},#{context});
+	</insert>
+
+
+</mapper>

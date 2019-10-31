@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fh.shop.admin.mapper.role.IRoleMapper">
+	<!--查询角色集合-->
+	<select id="roleList" resultType="com.fh.shop.admin.po.role.Role">
+		select id,roleName from t_role;
+	</select>
+
+	<!--查询角色总数-->
+	<select id="findRoleCount" parameterType="com.fh.shop.admin.param.role.RoleSearchParam" resultType="long">
+		select count(*) from t_role
+	</select>
+
+	<!--查询分页数据-->
+	<select id="findRolePageList" parameterType="com.fh.shop.admin.param.role.RoleSearchParam" resultType="com.fh.shop.admin.po.role.Role">
+		select t.* from (select id,roleName from t_role
+		order by id desc) t
+		limit #{start},#{length};
+	</select>
+
+	<!--删除-->
+	<delete id="deleteRoleById" parameterType="long">
+		delete from t_role where id=#{id};
+	</delete>
+
+	<!--回显-->
+	<select id="findRole" parameterType="Long" resultType="com.fh.shop.admin.po.role.Role">
+		  select id,roleName
+		  	from t_role where id=#{id};
+	</select>
+
+	<!--修改-->
+	<update id="updateRole" parameterType="com.fh.shop.admin.po.role.Role">
+		update t_role set roleName=#{roleName}
+		where id=#{id};
+	</update>
+
+	<!--新增角色-->
+	<insert id="addRole" parameterType="com.fh.shop.admin.po.role.Role">
+		<selectKey keyProperty="id" resultType="long" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+		insert into t_role (roleName)
+		values(#{roleName});
+	</insert>
+
+	<!--新增角色和资源 中间表数据-->
+	<insert id="addRoleResource">
+		insert into t_role_resource (roleId,resourceId) values
+			<foreach collection="list" item="roleResource" separator=",">
+				(#{roleResource.roleId},#{roleResource.resourceId})
+			</foreach>
+
+	</insert>
+
+	<!--查询角色 资源 中间表的resourceid-->
+	<select id="findResourceIdArr" parameterType="long" resultType="long">
+		select resourceId from t_role_resource where roleId=#{id};
+	</select>
+
+	<!--删除角色 菜单中间表-->
+	<delete id="deleteRoleResource" parameterType="long" >
+		delete from t_role_resource where roleId=#{v};
+	</delete>
+
+	<!--判断当前删除角色是否在使用-->
+	<select id="findUserRole" parameterType="long" resultType="com.fh.shop.admin.po.role.UserRole">
+		select id,userId,roleId from t_user_role where roleId=#{id};
+	</select>
+
+</mapper>

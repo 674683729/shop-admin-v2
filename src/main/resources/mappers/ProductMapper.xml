@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fh.shop.admin.mapper.product.IProductMapper">
+	<sql id="productWhere">
+		<where>
+			<if test="productName!=null and productName!=''">
+				productName like concat('%',#{productName},'%')
+			</if>
+			<if test="minPrice!=null and minPrice >0">
+				and price >=#{minPrice}
+			</if>
+			<if test="maxPrice!=null and maxPrice>=minPrice">
+				and price &lt;=#{maxPrice}
+			</if>
+			<if test="minCreateTime!=null">
+				and createTime >=#{minCreateTime}
+			</if>
+			<if test="maxCreateTime!=null and maxCreateTime >=minCreateTime">
+				and createTime &lt;=#{maxCreateTime}
+			</if>
+		</where>
+	</sql>
+	<!--新增商品-->
+	<insert id="addProduct" parameterType="com.fh.shop.admin.po.product.Product">
+		<selectKey keyProperty="id" resultType="long" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+		insert into t_product (productName,price,stock,isSellWell,isValid,brandId,mainImage,createTime)
+		values(#{productName},#{price},#{stock},#{isSellWell},#{isValid},#{brandId},#{mainImage},#{createTime});
+	</insert>
+
+	<!--查询商品总条数-->
+	<select id="findProductCount" parameterType="com.fh.shop.admin.param.product.ProductSearchParam" resultType="long">
+		select count(*) from t_product
+		<include refid="productWhere"></include>
+	</select>
+
+	<!--商品分页数据-->
+	<select id="findProductPageList" parameterType="com.fh.shop.admin.param.product.ProductSearchParam" resultType="com.fh.shop.admin.po.product.Product">
+		select t.* from
+		(select tp.id,tp.productName,tp.price,tp.stock,tp.isSellWell,tp.isValid,tp.mainImage,tp.createTime,tb.brandName "brand.brandName" from t_product tp
+		left join t_brand tb on tp.brandId=tb.id
+		<include refid="productWhere"></include>
+		order by tp.isValid,tp.id desc) t
+		limit #{start},#{length};
+	</select>
+
+	<!--删除-->
+	<delete id="deleteProductById" parameterType="long">
+		delete from t_product where id=#{id};
+	</delete>
+
+	<!--回显-->
+	<select id="findProduct" parameterType="Long" resultType="com.fh.shop.admin.po.product.Product">
+		  select id,productName,price,stock,isSellWell,isValid,brandId,mainImage,createTime
+		  	from t_product where id=#{id};
+	</select>
+
+	<!--修改-->
+	<update id="updateProduct" parameterType="com.fh.shop.admin.po.product.Product">
+		update t_product set productName=#{productName},price=#{price},stock=#{stock},isSellWell=#{isSellWell},isValid=#{isValid},brandId=#{brandId},mainImage=#{mainImage},createTime=#{createTime}
+		where id=#{id};
+	</update>
+
+	<!--批量删除-->
+	<delete id="batchDelete">
+		delete from t_product where id in
+		<foreach collection="list" item="ids" open="(" close=")" separator=",">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!--按条件查询商品数据-->
+	<select id="findProductList" parameterType="com.fh.shop.admin.param.product.ProductSearchParam" resultType="com.fh.shop.admin.po.product.Product">
+		select tp.id,tp.productName,tp.price,tp.stock,tp.isSellWell,tp.isValid,tp.mainImage,tp.createTime,tb.brandName "brand.brandName" from t_product tp
+			left join t_brand tb on tp.brandId=tb.id
+			<include refid="productWhere"></include>
+		order by id desc
+	</select>
+
+	<!--上下架-->
+	<update id="updateValid" parameterType="com.fh.shop.admin.po.product.Product">
+		update t_product set isValid=#{isValid} where id=#{id};
+	</update>
+</mapper>

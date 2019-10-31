@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="com-fh-car" />
+        <module name="mybatis-plus" />
+        <module name="shop-admin" />
+        <module name="shop-admin-v2" />
+        <module name="shop-admin-v3" />
+        <module name="shop-admin-v4" />
+        <module name="shop-api" />
+        <module name="shop-api-v2" />
+        <module name="springmvc-spring-jpa" />
+        <module name="vue-axios-ssmp" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>

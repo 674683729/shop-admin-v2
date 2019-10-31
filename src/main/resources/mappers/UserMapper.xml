@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fh.shop.admin.mapper.user.IUserMapper">
+<sql id="userWhere">
+	<where>
+		<if test="userName!=null and userName!=''">
+			userName like concat('%',#{userName},'%')
+		</if>
+		<if test="realName!=null and realName!=''">
+			and  realName like concat('%',#{realName},'%')
+		</if>
+		<if test="minAge!=null and minAge >0">
+			and age >=#{minAge}
+		</if>
+		<if test="maxAge!=null and maxAge>=minAge">
+			and age &lt;=#{maxAge}
+		</if>
+		<if test="minPay!=null and minPay >0">
+			and pay >=#{minPay}
+		</if>
+		<if test="maxPay!=null and maxPay>=minPay">
+			and pay &lt;=#{maxPay}
+		</if>
+		<if test="minEntryTime!=null">
+			and entryTime >=#{minEntryTime}
+		</if>
+		<if test="maxEntryTime!=null and maxEntryTime >=minEntryTime">
+			and entryTime &lt;=#{maxEntryTime}
+		</if>
+		<if test="roleIdArr != null and roleIdLength>0">
+			and id in (select userId from t_user_role where roleId in
+				<foreach item="roleIdArr" collection="roleIdArr" open="(" separator="," close=")">
+					#{roleIdArr}
+				</foreach>
+				group by userId having count(*)=#{roleIdLength}
+			)
+		</if>
+	</where>
+</sql>
+	<!--新增用户-->
+	<insert id="addUser" parameterType="com.fh.shop.admin.po.user.User">
+		<selectKey keyProperty="id" resultType="long" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+		insert into t_user (userName,password,salt,realName,sex,age,phone,email,pay,photo,entryTime,loginCount)
+				  values(#{userName},#{password},#{salt},#{realName},#{sex},#{age},#{phone},#{email},#{pay},#{photo},#{entryTime},#{loginCount});
+	</insert>
+
+	<!--查询用户总条数-->
+	<select id="findUserCount" parameterType="com.fh.shop.admin.param.user.UserSearchParam" resultType="long">
+		select count(*) from t_user
+		    <include refid="userWhere"></include>
+	</select>
+
+	<!--用户分页数据-->
+	<select id="findUserPageList" parameterType="com.fh.shop.admin.param.user.UserSearchParam" resultType="com.fh.shop.admin.po.user.User">
+		select t.* from (select id,userName,realName,sex,age,phone,email,pay,photo,entryTime,loginCount,loginTime,loginErrorCount from t_user
+		    <include refid="userWhere"></include>
+		      order by id desc) t
+		limit #{start},#{length};
+	</select>
+
+	<!--删除-->
+	<delete id="deleteUserById" parameterType="long">
+		delete from t_user where id=#{id};
+	</delete>
+
+	<!--回显-->
+	<select id="findUser" parameterType="Long" resultType="com.fh.shop.admin.po.user.User">
+		  select id,userName,password,salt,realName,sex,age,phone,email,pay,photo,entryTime,loginCount,loginTime,loginErrorCount
+		  	from t_user where id=#{id};
+	</select>
+
+	<!--修改-->
+	<update id="updateUser" parameterType="com.fh.shop.admin.po.user.User">
+		update t_user set userName=#{userName},realName=#{realName},sex=#{sex},
+			age=#{age},phone=#{phone},email=#{email},pay=#{pay},photo=#{photo},entryTime=#{entryTime}
+		where id=#{id};
+	</update>
+
+	<!--修改密码-->
+	<update id="updatePassword">
+		update t_user set password=#{encodePassword} where id=#{id};
+	</update>
+
+	<!--通过邮箱查询用户-->
+	<select id="findUserByEmail" parameterType="String" resultType="com.fh.shop.admin.po.user.User">
+		select id,salt from t_user where email=#{email};
+	</select>
+
+	<!--重置密码-->
+	<update id="updateResultPassword" parameterType="com.fh.shop.admin.po.user.User">
+		update t_user set password=#{password} where id=#{id};
+	</update>
+
+	<!--用户角色中间表新增-->
+	<insert id="addUserRole" parameterType="com.fh.shop.admin.po.role.UserRole" >
+		insert into t_user_role (userId,roleId) values (#{userId},#{roleId});
+	</insert>
+
+	<!--根据用户id查询角色名-->
+	<select id="findRoleNameList" parameterType="Long" resultType="String" >
+		select  r.roleName from t_user_role ur left join t_role r on ur.roleId=r.id
+			where ur.userId=#{id};
+	</select>
+
+	<!--根据id查询角色id-->
+	<select id="roleIdList" parameterType="Long" resultType="Long" >
+		select roleId from t_user_role
+			where userId=#{value};
+	</select>
+
+	<!--根据用户id删除用户角色中间表数据-->
+	<delete id="deleteUserRole" parameterType="Long">
+		delete from t_user_role where userId=#{value};
+	</delete>
+
+	<!--批量删除用户角色中间表数据-->
+	<delete id="batchDeleteUserRole">
+		delete from t_user_role where userId in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!--批量删除用户-->
+	<delete id="batchDelete">
+		delete from t_user where id in
+		<foreach collection="list" item="ids" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!--通过用户名查询用户-->
+	<select id="findUserByUserName" parameterType="String" resultType="com.fh.shop.admin.po.user.User">
+		select id,userName,salt,password,realName,sex,age,phone,email,pay,photo,entryTime,loginCount,loginTime,loginErrorCount,loginErrorTime
+		 from t_user where userName=#{userName};
+	</select>
+
+	<!--修改 登录时间 -->
+	<update id="updateLogin">
+		update t_user set LoginTime=#{date} where id=#{id};
+	</update>
+
+	<!--修改 登陆次数 重置登录错误次数-->
+	<update id="updateLoginCount">
+		update t_user set loginCount=#{i},loginErrorCount=0 where id=#{id};
+	</update>
+
+	<!--密码错误次数 更新错误时间-->
+	<update id="updateLoginErrorCount">
+		update t_user set loginErrorCount=#{i},loginErrorTime=#{date} where id=#{id};
+	</update>
+
+	<!--锁定用户-->
+	<update id="updateLockUser">
+		update t_user set loginErrorTime=#{date},loginErrorCount=loginErrorCount+1 where id=#{id};
+	</update>
+
+	<!--重置登录错误次数-->
+	<update id="updateResultLoginErrorCount" parameterType="Long">
+		update t_user set loginErrorCount=0 where id=#{id};
+	</update>
+
+	<!--锁定 或解锁 用户-->
+	<update id="updateLock">
+		update t_user set loginErrorCount=#{i} where id=#{id};
+	</update>
+
+	<!--按条件查询要导出的数据-->
+	<select id="findUserExpord" parameterType="com.fh.shop.admin.param.user.UserSearchParam" resultType="com.fh.shop.admin.po.user.User">
+		select id,userName,realName,sex,age,phone,email,pay,photo,entryTime,loginErrorCount from t_user
+			<include refid="userWhere"></include>
+			order by id desc;
+	</select>
+</mapper>

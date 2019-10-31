@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+		"-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.fh.shop.admin.mapper.area.IAreaMapper">
+
+	<!--查询地区集合-->
+	<select id="findAreaList" resultType="com.fh.shop.admin.po.area.Area">
+		select id,pid,cityName,type from t_area;
+	</select>
+
+	<!--新增-->
+	<insert id="addCity" parameterType="com.fh.shop.admin.po.area.Area">
+		<selectKey resultType="long"  order="AFTER" keyProperty="id">
+			select last_insert_id();
+		</selectKey>
+		insert into t_area (cityName,pid,type) values(#{cityName},#{pid},#{type});
+	</insert>
+
+	<!--删除-->
+	<delete id="deleteArea" >
+		delete from t_area where 1>2 or id in
+		<foreach item="ids" collection="list" open="(" separator="," close=")">
+			#{ids}
+		</foreach>
+	</delete>
+
+	<!--修改-->
+	<update id="updateArea" parameterType="com.fh.shop.admin.po.area.Area">
+		update t_area set cityName=#{cityName} where id=#{id};
+	</update>
+
+
+</mapper>

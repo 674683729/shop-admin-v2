@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../fh1902-demo/fh1902-demo.iml" filepath="$PROJECT_DIR$/../fh1902-demo/fh1902-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../shop-portal/shop-portal.iml" filepath="$PROJECT_DIR$/../shop-portal/shop-portal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../shop-portal-v2/shop-portal-v2.iml" filepath="$PROJECT_DIR$/../shop-portal-v2/shop-portal-v2.iml" />
+    </modules>
+  </component>
+</project>
